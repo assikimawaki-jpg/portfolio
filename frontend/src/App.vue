@@ -2,15 +2,15 @@
   <div class="page">
     <header class="header">
       <div class="container header-content">
-        <div class="logo">
+        <RouterLink to="/connexion" class="logo" @click="closeMobileMenu">
           <img class="logo-avatar" :src="logoAvatar" alt="Profil" />
           Portfolio
-        </div>
+        </RouterLink>
         <nav class="nav">
-          <RouterLink to="/">Accueil</RouterLink>
-          <RouterLink to="/a-propos">À propos</RouterLink>
-          <RouterLink to="/competences">Compétences</RouterLink>
-          <RouterLink to="/contact">Contact</RouterLink>
+          <RouterLink to="/" @click="closeMobileMenu">Accueil</RouterLink>
+          <RouterLink to="/a-propos" @click="closeMobileMenu">À propos</RouterLink>
+          <RouterLink to="/competences" @click="closeMobileMenu">Compétences</RouterLink>
+          <RouterLink to="/contact" @click="closeMobileMenu">Contact</RouterLink>
         </nav>
         <form class="header-actions" @submit.prevent="onSearch">
           <input
@@ -22,6 +22,38 @@
           />
           <button type="submit" class="button">Rechercher</button>
         </form>
+        <button
+          class="hamburger"
+          :class="{ open: mobileMenuOpen }"
+          type="button"
+          aria-label="Menu"
+          :aria-expanded="mobileMenuOpen"
+          @click="toggleMobileMenu"
+        >
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+      <div class="mobile-menu" :class="{ open: mobileMenuOpen }">
+        <div class="container mobile-menu-inner">
+        <nav class="mobile-nav">
+          <RouterLink to="/" @click="closeMobileMenu">Accueil</RouterLink>
+          <RouterLink to="/a-propos" @click="closeMobileMenu">À propos</RouterLink>
+          <RouterLink to="/competences" @click="closeMobileMenu">Compétences</RouterLink>
+          <RouterLink to="/contact" @click="closeMobileMenu">Contact</RouterLink>
+        </nav>
+        <form class="mobile-actions" @submit.prevent="onSearch">
+          <input
+            v-model="searchQuery"
+            class="search"
+            type="search"
+            placeholder="Rechercher compétences, projets..."
+            aria-label="Recherche"
+          />
+          <button type="submit" class="button">Rechercher</button>
+        </form>
+        </div>
       </div>
     </header>
     <main class="container main-content">
@@ -154,6 +186,15 @@ const currentYear = new Date().getFullYear();
 const newsletterEmail = ref("");
 const searchQuery = ref("");
 const showScrollBtn = ref(false);
+const mobileMenuOpen = ref(false);
+
+const toggleMobileMenu = () => {
+  mobileMenuOpen.value = !mobileMenuOpen.value;
+};
+
+const closeMobileMenu = () => {
+  mobileMenuOpen.value = false;
+};
 
 const onSearch = () => {
   const q = searchQuery.value?.trim();
@@ -218,6 +259,13 @@ const onNewsletterSubmit = () => {
   align-items: center;
   gap: 10px;
   color: #e2e8f0;
+  text-decoration: none;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.logo:hover {
+  color: #bfdbfe;
+  opacity: 0.95;
 }
 
 .logo-avatar {
@@ -268,14 +316,133 @@ const onNewsletterSubmit = () => {
   padding: 32px 0 60px;
 }
 
-@media (max-width: 900px) {
-  .header-content {
-    flex-direction: column;
-    align-items: flex-start;
+/* Hamburger - visible only on mobile */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background: transparent;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  color: #e2e8f0;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.hamburger:hover {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.hamburger-line {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.hamburger.open .hamburger-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger.open .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open .hamburger-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile menu dropdown */
+.mobile-menu-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  padding: 20px 0;
+  background: rgba(15, 23, 42, 0.98);
+  border-top: 1px solid rgba(148, 163, 184, 0.15);
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.mobile-menu.open {
+  max-height: 400px;
+  opacity: 1;
+}
+
+.mobile-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mobile-nav a {
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: rgba(226, 232, 240, 0.9);
+  font-weight: 500;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.mobile-nav a:hover,
+.mobile-nav a.router-link-active {
+  color: #bfdbfe;
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.mobile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mobile-actions .search {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
   }
 
-  .nav {
-    flex-wrap: wrap;
+  .nav,
+  .header-actions {
+    display: none;
+  }
+
+  .header-content {
+    flex-wrap: nowrap;
+  }
+
+  .mobile-menu {
+    display: flex;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-menu {
+    display: none !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .header-content {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
 }
 

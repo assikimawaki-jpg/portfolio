@@ -3,7 +3,7 @@ import Home from "../pages/Home.vue";
 import About from "../pages/About.vue";
 import Skills from "../pages/Skills.vue";
 import Contact from "../pages/Contact.vue";
-
+import Login from "../pages/Login.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -12,6 +12,7 @@ const router = createRouter({
     { path: "/a-propos", name: "about", component: About },
     { path: "/competences", name: "skills", component: Skills },
     { path: "/contact", name: "contact", component: Contact },
+    { path: "/connexion", name: "login", component: Login },
   ],
 });
 
