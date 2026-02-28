@@ -21,9 +21,12 @@
       </button>
     </div>
 
-    <div class="tool-grid">
+    <p v-if="searchQuery && !filteredActiveTools.length" class="projects-empty">
+        Aucun outil ne correspond à « {{ route.query.q }} » dans cette catégorie.
+      </p>
+    <div v-else class="tool-grid">
       <div
-        v-for="(tool, idx) in activeTools"
+        v-for="(tool, idx) in filteredActiveTools"
         :key="tool.name"
         class="tool-card"
         :class="`tool-accent-${(idx % 4) + 1}`"
@@ -64,7 +67,7 @@
       </p>
       <div class="project-grid">
         <article
-          v-for="(project, idx) in projects"
+          v-for="(project, idx) in filteredProjects"
           :key="project.id"
           class="project-card"
           :class="`project-accent-${(idx % 4) + 1}`"
@@ -120,8 +123,8 @@
           </div>
         </article>
       </div>
-      <p v-if="!projects.length && !loadingProjects" class="projects-empty">
-        Aucun projet pour le moment.
+      <p v-if="!filteredProjects.length && !loadingProjects" class="projects-empty">
+        {{ searchQuery ? "Aucun projet ne correspond à votre recherche." : "Aucun projet pour le moment." }}
       </p>
     </div>
   </section>
@@ -129,9 +132,11 @@
 
 <script setup>
 import { computed, ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
 import api from "../services/api";
 import { resolveMediaUrl } from "../services/media";
 
+const route = useRoute();
 const tabs = ["Design", "Développement", "Motion & 3D"];
 const activeTab = ref("Design");
 
@@ -186,6 +191,26 @@ const tools = computed(() => {
 
 const activeTools = computed(() => {
   return tools.value.find((t) => t.category === activeTab.value)?.items || [];
+});
+
+const searchQuery = computed(() => (route.query.q || "").trim().toLowerCase());
+
+const filteredActiveTools = computed(() => {
+  const list = activeTools.value;
+  const q = searchQuery.value;
+  if (!q) return list;
+  return list.filter((t) => t.name.toLowerCase().includes(q));
+});
+
+const filteredProjects = computed(() => {
+  const list = projects.value;
+  const q = searchQuery.value;
+  if (!q) return list;
+  return list.filter(
+    (p) =>
+      (p.titre || "").toLowerCase().includes(q) ||
+      (p.description || "").toLowerCase().includes(q)
+  );
 });
 
 onMounted(async () => {

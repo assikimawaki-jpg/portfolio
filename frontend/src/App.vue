@@ -12,10 +12,16 @@
           <RouterLink to="/competences">Compétences</RouterLink>
           <RouterLink to="/contact">Contact</RouterLink>
         </nav>
-        <div class="header-actions">
-          <input class="search" type="search" placeholder="Rechercher..." />
-          <button class="button">Rechercher</button>
-        </div>
+        <form class="header-actions" @submit.prevent="onSearch">
+          <input
+            v-model="searchQuery"
+            class="search"
+            type="search"
+            placeholder="Rechercher compétences, projets..."
+            aria-label="Recherche"
+          />
+          <button type="submit" class="button">Rechercher</button>
+        </form>
       </div>
     </header>
     <main class="container main-content">
@@ -140,12 +146,20 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
-import { RouterLink, RouterView } from "vue-router";
+import { RouterLink, RouterView, useRouter } from "vue-router";
 import logoAvatar from "./assets/logo-avatar.png";
 
+const router = useRouter();
 const currentYear = new Date().getFullYear();
 const newsletterEmail = ref("");
+const searchQuery = ref("");
 const showScrollBtn = ref(false);
+
+const onSearch = () => {
+  const q = searchQuery.value?.trim();
+  if (!q) return;
+  router.push({ path: "/competences", query: { q } });
+};
 
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: "smooth" });

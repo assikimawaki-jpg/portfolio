@@ -93,7 +93,7 @@
               <img :src="profileImage" alt="Photo de profil" />
             </div>
             <div>
-              <strong class="profile-name">Salem Swift</strong>
+              <strong class="profile-name">Mawaki</strong>
               <p class="role">Manager</p>
             </div>
           </div>
@@ -376,7 +376,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="p in parcours" :key="p.id">
+            <tr v-for="p in filteredParcours" :key="p.id">
               <td>{{ p.date }}</td>
               <td>{{ p.titre }}</td>
               <td>{{ p.lieu }}</td>
@@ -386,7 +386,7 @@
                 <button class="button secondary danger" @click="deleteParcours(p.id)">Supprimer</button>
               </td>
             </tr>
-            <tr v-if="!parcours.length">
+            <tr v-if="!filteredParcours.length">
               <td colspan="5" class="empty-state">Aucune étape. Cliquez sur « Ajouter » pour en créer une.</td>
             </tr>
           </tbody>
@@ -683,6 +683,12 @@ const filteredProjets = computed(() =>
 const filteredMessages = computed(() =>
   messages.value.filter((message) =>
     matchesQuery([message.nom, message.email, message.sujet, message.message])
+  )
+);
+
+const filteredParcours = computed(() =>
+  parcours.value.filter((p) =>
+    matchesQuery([p.date, p.titre, p.lieu, p.localisation, p.description])
   )
 );
 
