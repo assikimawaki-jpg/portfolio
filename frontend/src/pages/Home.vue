@@ -3,7 +3,9 @@
     <div class="hero-grid">
       <div class="hero-info">
         <p class="hero-eyebrow animate-in">Bonjour, je suis</p>
-        <h1 class="hero-title hero-brand-name animate-in" style="--delay: 0.05s">{{ profil?.nom || "Assiki Mawaki" }}</h1>
+        <h1 class="hero-title hero-brand-name animate-in" style="--delay: 0.05s">
+          {{ displayedName }}
+        </h1>
         <p class="hero-role animate-in" style="--delay: 0.1s">
           {{ profil?.titre_professionnel || "Designer UI/UX & Créateur web" }}
         </p>
@@ -176,7 +178,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { RouterLink } from "vue-router";
 import api from "../services/api";
 import { resolveMediaUrl } from "../services/media";
@@ -184,6 +186,7 @@ import heroProfileImage from "../assets/hero-profile.png";
 
 const profil = ref(null);
 const heroImage = heroProfileImage;
+const displayedName = computed(() => profil.value?.nom || "Assiki Mawaki");
 
 const loadProfil = async () => {
   const response = await api.get("profil/");
@@ -246,7 +249,7 @@ onMounted(loadProfil);
   font-size: clamp(32px, 5vw, 64px);
   letter-spacing: 8px;
   text-transform: capitalize;
-  margin: 12px 0 8px;
+  margin: 12px 0 2px;
   font-weight: 700;
 }
 
