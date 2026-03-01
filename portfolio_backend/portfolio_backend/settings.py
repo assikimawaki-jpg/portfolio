@@ -27,9 +27,14 @@ def _split_env_list(value, default=None):
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "change-me-in-production")
 DEBUG = os.getenv("DJANGO_DEBUG", "true").lower() == "true"
-ALLOWED_HOSTS = _split_env_list(
-    os.getenv("DJANGO_ALLOWED_HOSTS"), ["localhost", "127.0.0.1"]
-)
+_allowed = _split_env_list(os.getenv("DJANGO_ALLOWED_HOSTS"))
+if not _allowed:
+    db_url = os.getenv("DATABASE_URL") or os.getenv("DATABASE_PRIVATE_URL")
+    if db_url and not str(db_url).strip().startswith("${{"):
+        _allowed = ["*", ".up.railway.app"]
+    else:
+        _allowed = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = _allowed
 
 
 INSTALLED_APPS = [
@@ -52,6 +57,7 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "portfolio_backend.middleware.DisableCSRFForAPI",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",

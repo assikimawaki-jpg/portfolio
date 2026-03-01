@@ -1,6 +1,10 @@
 # Corriger "Impossible de joindre l'API"
 
-Si le frontend affiche cette erreur, suivez ces 3 étapes :
+Si le frontend affiche cette erreur, vérifiez d'abord que **l'API Railway répond** :
+ouvrez `https://poetic-youth-production-f0d6.up.railway.app/api/` dans le navigateur.
+Si vous voyez "Application failed to respond" → le backend est down, consultez les **logs Railway** (Deployments → View Logs).
+
+Sinon, suivez ces 3 étapes :
 
 ---
 

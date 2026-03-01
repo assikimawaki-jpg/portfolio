@@ -164,7 +164,9 @@ Après déploiement, vous aurez :
 
 | Problème | Solution |
 |----------|----------|
+| "Application failed to respond" (Railway) | **Logs** : Railway → poetic-youth → Deployments → ⋮ → View Logs. Vérifiez : Root Directory = `portfolio_backend`, `DATABASE_URL` injecté (Postgres connecté), `DJANGO_ALLOWED_HOSTS` = `*` |
 | "No start command" sur Railway | Vérifiez que **Root Directory** = `portfolio_backend` |
+| "Impossible de joindre l'API" | 1) Vérifiez que l'API répond : ouvrez `https://VOTRE-API.railway.app/api/` dans le navigateur. Si erreur → backend down, consultez les logs Railway. 2) `VITE_API_URL` sur Vercel + redéploy. 3) `CORS_ALLOW_ALL` = `true` sur Railway |
 | "Identifiants invalides" | Créez le superutilisateur (étape 1.7) ou vérifiez `VITE_API_URL` |
-| Erreur CORS | Vérifiez que les URLs Vercel sont dans `CORS_ALLOWED_ORIGINS` |
+| Erreur CORS | Utilisez `CORS_ALLOW_ALL` = `true` sur Railway, ou ajoutez vos URLs Vercel dans `CORS_ALLOWED_ORIGINS` |
 | 404 sur les routes admin | Vérifiez `vercel.json` avec la règle `rewrites` pour SPA |
