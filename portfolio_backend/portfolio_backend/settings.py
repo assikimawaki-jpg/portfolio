@@ -157,6 +157,7 @@ CORS_ALLOWED_ORIGINS = _split_env_list(
     os.getenv("CORS_ALLOWED_ORIGINS"),
     ["http://localhost:5173", "http://localhost:5174"],
 )
+CORS_ALLOW_ALL_ORIGINS = os.getenv("CORS_ALLOW_ALL", "false").lower() == "true"
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = _split_env_list(
     os.getenv("CSRF_TRUSTED_ORIGINS"),

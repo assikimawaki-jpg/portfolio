@@ -47,9 +47,10 @@ const handleLogin = async () => {
     localStorage.setItem("access_token", response.data.access);
     localStorage.setItem("refresh_token", response.data.refresh);
     window.location.href = adminDashboardUrl.value;
-  } catch (err) {
+    } catch (err) {
     if (err.code === "ERR_NETWORK" || err.message?.includes("Network Error")) {
-      error.value = "Impossible de joindre l'API. Vérifiez que le backend est déployé et que VITE_API_URL est configuré sur Vercel.";
+      const apiUrl = import.meta.env.VITE_API_URL || "(non configuré)";
+      error.value = "Impossible de joindre l'API. Voir VERCEL_API_LINK.md : VITE_API_URL sur Vercel + CORS_ALLOW_ALL sur Railway + Redéployez.";
     } else if (err.response?.status === 401) {
       error.value = "Identifiants invalides.";
     } else if (err.response?.status === 404) {
