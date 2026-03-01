@@ -93,9 +93,9 @@ DATABASES = {
     }
 }
 
-# Railway : priorité à DATABASE_URL (référence ${{Postgres.DATABASE_URL}})
-db_url = os.getenv("DATABASE_URL")
-if dj_database_url and db_url and not db_url.startswith("${{"):
+# Railway : DATABASE_URL ou DATABASE_PRIVATE_URL (référence ${{Postgres.DATABASE_URL}})
+db_url = os.getenv("DATABASE_URL") or os.getenv("DATABASE_PRIVATE_URL")
+if dj_database_url and db_url and not str(db_url).strip().startswith("${{"):
     DATABASES["default"] = dj_database_url.config(
         conn_max_age=600,
         conn_health_checks=True,
