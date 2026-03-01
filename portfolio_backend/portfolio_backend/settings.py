@@ -85,15 +85,17 @@ WSGI_APPLICATION = "portfolio_backend.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB", "portfolio_db"),
-        "USER": os.getenv("POSTGRES_USER", "portfolio_user"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "portfolio_password"),
-        "HOST": os.getenv("POSTGRES_HOST", "localhost"),
-        "PORT": os.getenv("POSTGRES_PORT", "5432"),
+        "NAME": os.getenv("PGDATABASE") or os.getenv("POSTGRES_DB", "portfolio_db"),
+        "USER": os.getenv("PGUSER") or os.getenv("POSTGRES_USER", "portfolio_user"),
+        "PASSWORD": os.getenv("PGPASSWORD") or os.getenv("POSTGRES_PASSWORD", "portfolio_password"),
+        "HOST": os.getenv("PGHOST") or os.getenv("POSTGRES_HOST", "localhost"),
+        "PORT": os.getenv("PGPORT") or os.getenv("POSTGRES_PORT", "5432"),
     }
 }
 
-if dj_database_url and os.getenv("DATABASE_URL"):
+# Railway : priorité à DATABASE_URL (référence ${{Postgres.DATABASE_URL}})
+db_url = os.getenv("DATABASE_URL")
+if dj_database_url and db_url and not db_url.startswith("${{"):
     DATABASES["default"] = dj_database_url.config(
         conn_max_age=600,
         conn_health_checks=True,
