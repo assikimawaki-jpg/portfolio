@@ -11,7 +11,8 @@ Suivez ces étapes dans l'ordre. Une fois fait, chaque `git push` déclenchera u
 3. **IMPORTANT** : Cliquez sur le service créé → **Settings** → **Root Directory** : `portfolio_backend` → Save  
    (Sans ça : erreur "Error creating build plan with Railpack")
 4. **+ New** → **Database** → **PostgreSQL**
-5. Cliquez sur le service **portfolio** (pas la base) → **Variables** → Add :
+5. **IMPORTANT** : Cliquez sur le service **portfolio** (backend, pas Postgres) → **Variables** → Add :
+   - `DATABASE_URL` = `${{Postgres.DATABASE_URL}}` (remplacez "Postgres" par le nom exact de votre service PostgreSQL si différent)
    - `DJANGO_SECRET_KEY` : exécutez `python -c "import secrets; print(secrets.token_hex(32))"` et collez le résultat
    - `DJANGO_DEBUG` : `false`
    - `DJANGO_ALLOWED_HOSTS` : `*`
