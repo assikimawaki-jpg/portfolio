@@ -8,7 +8,8 @@ Suivez ces étapes dans l'ordre. Une fois fait, chaque `git push` déclenchera u
 
 1. **[railway.app](https://railway.app)** → Login with GitHub
 2. **New Project** → **Deploy from GitHub repo** → `assikimawaki-jpg/portfolio`
-3. Cliquez sur le service créé → **Settings** → **Root Directory** : `portfolio_backend` → Save
+3. **IMPORTANT** : Cliquez sur le service créé → **Settings** → **Root Directory** : `portfolio_backend` → Save  
+   (Sans ça : erreur "Error creating build plan with Railpack")
 4. **+ New** → **Database** → **PostgreSQL**
 5. Cliquez sur le service **portfolio** (pas la base) → **Variables** → Add :
    - `DJANGO_SECRET_KEY` : exécutez `python -c "import secrets; print(secrets.token_hex(32))"` et collez le résultat
