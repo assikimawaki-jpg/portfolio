@@ -10,9 +10,13 @@
 - Choisissez **Deploy from GitHub repo**
 - Sélectionnez votre dépôt `assikimawaki-jpg/portfolio`
 
-### 3. Configurer le service
-- Railway va détecter le projet. **Important** : définissez le **Root Directory** :
-  - Settings → Root Directory → `portfolio_backend`
+### 3. Configurer le service (OBLIGATOIRE)
+- Railway détecte le dépôt racine (Node.js) par défaut. **Vous DEVEZ définir le Root Directory** :
+  1. Cliquez sur le service **portfolio**
+  2. Onglet **Settings**
+  3. Section **Build** → **Root Directory** → saisissez : `portfolio_backend`
+  4. Sauvegardez
+- Sans cette étape, le build échouera avec "No start command was found"
 
 ### 4. Ajouter PostgreSQL
 - Dans votre projet, cliquez sur **+ New** → **Database** → **PostgreSQL**
