@@ -5,3 +5,6 @@ django-cors-headers
 djangorestframework-simplejwt
 Pillow
 python-dotenv
+gunicorn
+whitenoise
+dj-database-url

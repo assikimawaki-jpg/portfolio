@@ -48,7 +48,15 @@ const handleLogin = async () => {
     localStorage.setItem("refresh_token", response.data.refresh);
     window.location.href = adminDashboardUrl.value;
   } catch (err) {
-    error.value = "Identifiants invalides.";
+    if (err.code === "ERR_NETWORK" || err.message?.includes("Network Error")) {
+      error.value = "Impossible de joindre l'API. Vérifiez que le backend est déployé et que VITE_API_URL est configuré sur Vercel.";
+    } else if (err.response?.status === 401) {
+      error.value = "Identifiants invalides.";
+    } else if (err.response?.status === 404) {
+      error.value = "API non trouvée. Vérifiez l'URL du backend (VITE_API_URL).";
+    } else {
+      error.value = err.response?.data?.detail || "Erreur de connexion. Vérifiez la configuration.";
+    }
     loading.value = false;
   }
 };
