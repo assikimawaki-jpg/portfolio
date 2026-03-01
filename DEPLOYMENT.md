@@ -61,13 +61,15 @@ Remplacez `VOTRE-FRONTEND.vercel.app` et `VOTRE-ADMIN.vercel.app` par vos URLs r
 4. Notez l’URL (ex. `portfolio-production-xxxx.up.railway.app`)
 
 ### Étape 1.7 – Superutilisateur
-1. Onglet **portfolio** → **Deployments**
-2. Une fois le déploiement réussi, cliquez sur **⋮** (trois points) → **View Logs** ou **Terminal**
-3. Si Railway propose un terminal : exécutez :
-   ```bash
-   python manage.py createsuperuser
-   ```
-4. Saisissez : `Mawaki`, email, `Antoine@05#`
+
+Le superutilisateur est **créé automatiquement** au premier démarrage (Mawaki / Antoine@05#).
+
+Pour personnaliser, ajoutez ces variables sur Railway :
+| Variable | Valeur |
+|----------|--------|
+| `DJANGO_SUPERUSER_USERNAME` | Mawaki |
+| `DJANGO_SUPERUSER_EMAIL` | votre@email.com |
+| `DJANGO_SUPERUSER_PASSWORD` | votre mot de passe |
 
 ---
 
@@ -167,6 +169,6 @@ Après déploiement, vous aurez :
 | "Application failed to respond" (Railway) | **Logs** : Railway → poetic-youth → Deployments → ⋮ → View Logs. Vérifiez : Root Directory = `portfolio_backend`, `DATABASE_URL` injecté (Postgres connecté), `DJANGO_ALLOWED_HOSTS` = `*` |
 | "No start command" sur Railway | Vérifiez que **Root Directory** = `portfolio_backend` |
 | "Impossible de joindre l'API" | 1) Vérifiez que l'API répond : ouvrez `https://VOTRE-API.railway.app/api/` dans le navigateur. Si erreur → backend down, consultez les logs Railway. 2) `VITE_API_URL` sur Vercel + redéploy. 3) `CORS_ALLOW_ALL` = `true` sur Railway |
-| "Identifiants invalides" | Créez le superutilisateur (étape 1.7) ou vérifiez `VITE_API_URL` |
+| "Identifiants invalides" | Le superutilisateur est créé au démarrage. Redéployez Railway pour lancer `ensure_superuser`. |
 | Erreur CORS | Utilisez `CORS_ALLOW_ALL` = `true` sur Railway, ou ajoutez vos URLs Vercel dans `CORS_ALLOWED_ORIGINS` |
 | 404 sur les routes admin | Vérifiez `vercel.json` avec la règle `rewrites` pour SPA |
