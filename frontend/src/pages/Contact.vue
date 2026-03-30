@@ -5,8 +5,7 @@
         <p class="eyebrow">Contact</p>
         <h2 class="title">Entrons en contact</h2>
         <p class="muted">
-          Besoin d'un site web futuriste ou d'une refonte UI/UX ? Écris-moi,
-          je réponds rapidement.
+          Besoin d'un site web moderne ou d'une refonte UI/UX ? Contactez-moi, je vous réponds rapidement.
         </p>
         <div class="info-list">
           <div class="info-item">

@@ -13,7 +13,7 @@
           pour le web design et l'automatisation digitale
         </p>
         <p class="hero-copy animate-in" style="--delay: 0.2s">
-          {{ profil?.bio || "Je conçois des expériences visuelles immersives et des interfaces modernes avec une touche futuriste." }}
+          {{ profil?.bio || "J'aide les entreprises à créer des interfaces modernes, intuitives et performantes qui attirent et convertissent leurs utilisateurs." }}
         </p>
         <div class="hero-actions animate-in" style="--delay: 0.25s">
           <RouterLink class="button" to="/contact">Contactez-moi</RouterLink>
