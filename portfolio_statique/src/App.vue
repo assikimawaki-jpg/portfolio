@@ -142,6 +142,26 @@
           <RouterLink to="/mes-projets" @click.prevent="(e) => onNavPageClick('/mes-projets', e)">{{ t("nav.projects") }}</RouterLink>
           <RouterLink to="/contact" @click.prevent="(e) => onNavPageClick('/contact', e)">{{ t("nav.contact") }}</RouterLink>
         </nav>
+        <div class="mobile-lang-wrap">
+          <div class="lang-switch" role="group" :aria-label="t('lang.label')">
+            <button
+              type="button"
+              class="lang-btn"
+              :class="{ active: locale === 'fr' }"
+              @click="setLocale('fr')"
+            >
+              {{ t("lang.fr") }}
+            </button>
+            <button
+              type="button"
+              class="lang-btn"
+              :class="{ active: locale === 'en' }"
+              @click="setLocale('en')"
+            >
+              {{ t("lang.en") }}
+            </button>
+          </div>
+        </div>
         <form class="mobile-actions" @submit.prevent="onSearch">
           <input
             v-model="searchQuery"
@@ -975,6 +995,11 @@ const onNewsletterSubmit = () => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.mobile-lang-wrap {
+  display: flex;
+  justify-content: flex-start;
 }
 
 .mobile-menu {
