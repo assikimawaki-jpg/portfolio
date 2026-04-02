@@ -268,6 +268,9 @@ import logoAvatar from "./assets/logo-avatar.png";
 const NAV_VIDEO_MS = 2000;
 const DEFAULT_NAV_VIDEO = "banniere-competence.mp4";
 
+/** Pas de vidéo avant l’affichage de ces pages (navigation immédiate) */
+const PATHS_WITHOUT_NAV_VIDEO = ["/a-propos", "/competences", "/contact"];
+
 /** Message « Bienvenue » + effets foudre : 3 s après l’arrivée, affichage 2 s */
 const WELCOME_OVERLAY_DELAY_MS = 3000;
 const WELCOME_OVERLAY_DURATION_MS = 2000;
@@ -333,6 +336,11 @@ async function openNavTransition(targetPath, options = {}) {
   const durationMs = options.durationMs ?? NAV_VIDEO_MS;
 
   if (route.path === targetPath) {
+    closeMobileMenu();
+    return;
+  }
+  if (PATHS_WITHOUT_NAV_VIDEO.includes(targetPath)) {
+    router.push(targetPath);
     closeMobileMenu();
     return;
   }

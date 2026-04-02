@@ -127,6 +127,27 @@
     <div class="hero-glow"></div>
   </section>
 
+  <Transition name="contact-hint-fade">
+    <div
+      v-if="showContactHint"
+      class="contact-hint-overlay"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="contact-hint-card">
+        <div class="contact-hint-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 4h16v16H4z" stroke-linejoin="round" />
+            <path d="M22 6l-10 7L2 6" stroke-linecap="round" />
+          </svg>
+        </div>
+        <p class="contact-hint-title">Contactez-moi et</p>
+        <p class="contact-hint-text">je vous réponds au plus vite.</p>
+        <span class="contact-hint-shine" aria-hidden="true" />
+      </div>
+    </div>
+  </Transition>
+
   <section class="services">
     <p class="hero-eyebrow">Mes services</p>
     <h2 class="glow-text">Ce que je fais</h2>
@@ -190,18 +211,47 @@
 </template>
 
 <script setup>
-import { inject } from "vue";
-import { RouterLink } from "vue-router";
+import { ref, onUnmounted, watch } from "vue";
+import { RouterLink, useRouter } from "vue-router";
 import { profil } from "../data/static";
 import heroProfileImage from "../assets/hero-profile.png";
 
 const heroImage = heroProfileImage;
+const router = useRouter();
+const showContactHint = ref(false);
+let contactHintTimer = null;
 
-const openNavTransition = inject("openNavTransition");
+const CONTACT_HINT_MS = 2200;
+const CONTACT_HINT_MS_REDUCED = 500;
+
+function prefersReducedMotionHint() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
 
 function onContactezMoiClick() {
-  openNavTransition?.("/contact", { videoFile: "chik.mp4", durationMs: 2000 });
+  if (contactHintTimer != null) {
+    clearTimeout(contactHintTimer);
+    contactHintTimer = null;
+  }
+  showContactHint.value = true;
+  const delay = prefersReducedMotionHint() ? CONTACT_HINT_MS_REDUCED : CONTACT_HINT_MS;
+  contactHintTimer = window.setTimeout(() => {
+    contactHintTimer = null;
+    showContactHint.value = false;
+    router.push("/contact");
+  }, delay);
 }
+
+onUnmounted(() => {
+  if (contactHintTimer != null) clearTimeout(contactHintTimer);
+  if (typeof document !== "undefined") document.body.style.overflow = "";
+});
+
+watch(showContactHint, (on) => {
+  if (typeof document === "undefined") return;
+  document.body.style.overflow = on ? "hidden" : "";
+});
 </script>
 
 <style scoped>
@@ -603,4 +653,151 @@ function onContactezMoiClick() {
 .service-grid .card:nth-child(1) { animation-delay: 0.1s; }
 .service-grid .card:nth-child(2) { animation-delay: 0.2s; }
 .service-grid .card:nth-child(3) { animation-delay: 0.3s; }
+
+/* Animation « Contactez-moi » */
+.contact-hint-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(2, 6, 23, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.contact-hint-card {
+  position: relative;
+  max-width: 380px;
+  width: 100%;
+  padding: 32px 28px 30px;
+  border-radius: 20px;
+  text-align: center;
+  overflow: hidden;
+  background: linear-gradient(160deg, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.99));
+  border: 1px solid rgba(59, 130, 246, 0.45);
+  box-shadow:
+    0 0 0 1px rgba(147, 197, 253, 0.12),
+    0 24px 60px rgba(0, 0, 0, 0.55),
+    0 0 80px rgba(59, 130, 246, 0.18);
+  animation: contact-hint-pop 0.55s cubic-bezier(0.34, 1.35, 0.64, 1) both;
+}
+
+.contact-hint-icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 16px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  animation: contact-hint-icon-pulse 1.6s ease-in-out infinite;
+}
+
+.contact-hint-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.contact-hint-title {
+  margin: 0 0 8px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  background: linear-gradient(120deg, #f8fafc, #93c5fd);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.contact-hint-text {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: rgba(226, 232, 240, 0.92);
+  font-weight: 500;
+}
+
+.contact-hint-shine {
+  position: absolute;
+  inset: -50%;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 60%
+  );
+  animation: contact-hint-shine 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes contact-hint-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.88) translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes contact-hint-icon-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.35);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 24px 4px rgba(59, 130, 246, 0.25);
+    transform: scale(1.03);
+  }
+}
+
+@keyframes contact-hint-shine {
+  0% {
+    transform: translateX(-30%) rotate(12deg);
+  }
+  100% {
+    transform: translateX(30%) rotate(12deg);
+  }
+}
+
+.contact-hint-fade-enter-active,
+.contact-hint-fade-leave-active {
+  transition: opacity 0.35s ease;
+}
+
+.contact-hint-fade-enter-active .contact-hint-card,
+.contact-hint-fade-leave-active .contact-hint-card {
+  transition: transform 0.35s ease, opacity 0.35s ease;
+}
+
+.contact-hint-fade-enter-from,
+.contact-hint-fade-leave-to {
+  opacity: 0;
+}
+
+.contact-hint-fade-enter-from .contact-hint-card,
+.contact-hint-fade-leave-to .contact-hint-card {
+  transform: scale(0.95);
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-hint-card {
+    animation: none;
+  }
+
+  .contact-hint-icon {
+    animation: none;
+  }
+
+  .contact-hint-shine {
+    animation: none;
+  }
+}
 </style>
