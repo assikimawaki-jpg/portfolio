@@ -14,11 +14,10 @@
         <div class="skills-hero-scrim" />
       </div>
       <div class="skills-hero-content">
-        <span class="pill">Compétences</span>
-        <h2 class="title">Outils & Technologies</h2>
+        <span class="pill">{{ t("skills.pill") }}</span>
+        <h2 class="title">{{ t("skills.title") }}</h2>
         <p class="muted skills-hero-intro">
-          Les logiciels et technologies que j'utilise quotidiennement pour créer
-          des expériences numériques exceptionnelles.
+          {{ t("skills.intro") }}
         </p>
       </div>
     </div>
@@ -28,13 +27,13 @@
       class="filter-chip"
       role="status"
     >
-      <span class="filter-chip-label">Filtre actif</span>
+      <span class="filter-chip-label">{{ t("skills.filterActive") }}</span>
       <span class="filter-chip-q">« {{ route.query.q }} »</span>
       <RouterLink
         :to="{ path: '/competences', query: {} }"
         class="filter-chip-clear"
       >
-        Réinitialiser
+        {{ t("skills.reset") }}
       </RouterLink>
     </div>
 
@@ -46,7 +45,7 @@
         class="tabs"
         :style="{ '--active-tab': activeTabIndex }"
         role="tablist"
-        aria-label="Catégories de compétences"
+        :aria-label="t('skills.tablistAria')"
       >
         <button
           v-for="tab in tabs"
@@ -58,12 +57,12 @@
           :aria-selected="activeTab === tab"
           @click="activeTab = tab"
         >
-          {{ tab }}
+          {{ tabLabel(tab) }}
         </button>
       </div>
 
       <p v-if="searchQuery && !filteredActiveTools.length" class="projects-empty">
-        Aucun outil ne correspond à « {{ route.query.q }} » dans cette catégorie.
+        {{ t("skills.noToolsMatch", { q: route.query.q }) }}
       </p>
       <TransitionGroup
         v-else
@@ -112,13 +111,13 @@
     </div>
 
     <div class="projects-section">
-      <span class="pill">Portfolio</span>
-      <h2 class="projects-title">Projets récents</h2>
+      <span class="pill">{{ t("skills.portfolioPill") }}</span>
+      <h2 class="projects-title">{{ t("skills.recentTitle") }}</h2>
       <p class="muted projects-subtitle">
-        Projets web et créations graphiques (affiches, print) — un aperçu de mon travail.
+        {{ t("skills.recentSubtitle") }}
       </p>
       <p class="projects-see-all">
-        <RouterLink to="/mes-projets" class="link-all-projects">Voir tous les projets →</RouterLink>
+        <RouterLink to="/mes-projets" class="link-all-projects">{{ t("skills.seeAll") }}</RouterLink>
       </p>
       <TransitionGroup
         name="list-stagger"
@@ -151,7 +150,7 @@
                 <circle cx="8.5" cy="8.5" r="1.5" />
                 <path d="M21 15l-5-5L5 21" />
               </svg>
-              <span>Projet</span>
+              <span>{{ t("skills.projectLabel") }}</span>
             </div>
           </div>
           <div class="project-body">
@@ -165,7 +164,7 @@
                 rel="noopener noreferrer"
                 class="project-btn"
               >
-                Voir la démo
+                {{ t("skills.viewDemo") }}
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                   <polyline points="15 3 21 3 21 9" />
@@ -190,14 +189,14 @@
                 class="project-btn secondary"
                 :download="fichierImage(project)"
               >
-                Télécharger l’image
+                {{ t("skills.downloadImage") }}
               </a>
             </div>
           </div>
         </article>
       </TransitionGroup>
       <p v-if="!filteredProjects.length" class="projects-empty">
-        {{ searchQuery ? "Aucun projet ne correspond à votre recherche." : "Aucun projet pour le moment. (Version statique)" }}
+        {{ searchQuery ? t("skills.emptySearch") : t("skills.emptyStatic") }}
       </p>
     </div>
   </section>
@@ -213,9 +212,18 @@ import {
   nextTick,
 } from "vue";
 import { useRoute, RouterLink } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { competences, projets, projetsGraphisme } from "../data/static";
+import { mergeProjectLocale } from "../i18n/mergeProject";
 
 const route = useRoute();
+const { t, locale } = useI18n();
+
+function tabLabel(cat) {
+  if (cat === "Design") return t("skills.tabDesign");
+  if (cat === "Développement") return t("skills.tabDev");
+  return t("skills.tabMotion");
+}
 
 const skillsHeroVideoUrl = computed(() => {
   const b = import.meta.env.BASE_URL || "/";
@@ -315,10 +323,13 @@ const filteredActiveTools = computed(() => {
   return list.filter((t) => t.name.toLowerCase().includes(q));
 });
 
-const portfolioListe = computed(() => [
-  ...projets.map((p) => ({ ...p, kind: "web" })),
-  ...projetsGraphisme.map((p) => ({ ...p, kind: "graphisme" })),
-]);
+const portfolioListe = computed(() => {
+  const raw = [
+    ...projets.map((p) => ({ ...p, kind: "web" })),
+    ...projetsGraphisme.map((p) => ({ ...p, kind: "graphisme" })),
+  ];
+  return raw.map((p) => mergeProjectLocale(p, locale.value));
+});
 
 function projectSearchBlob(p) {
   return [

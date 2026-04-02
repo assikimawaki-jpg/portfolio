@@ -17,14 +17,18 @@
       <div class="about-hero-content">
         <div class="about-badge animate-in about-badge--on-video">
           <span class="badge-line"></span>
-          <span>À propos</span>
+          <span>{{ t("about.badge") }}</span>
         </div>
         <h1 class="about-title animate-in about-title--on-video" style="--delay: 0.05s">
-          Je suis <span class="brand-name">{{ profil.nom }}</span>, Designer & Développeur Web
+          <i18n-t keypath="about.heroTitle" tag="span">
+            <template #name>
+              <span class="brand-name">{{ profil.nom }}</span>
+            </template>
+          </i18n-t>
         </h1>
         <div class="about-intro-block animate-in about-intro-block--on-video" style="--delay: 0.1s">
           <p
-            v-for="(para, i) in profil.bioParagraphs"
+            v-for="(para, i) in bioParagraphs"
             :key="i"
             class="about-intro"
           >
@@ -35,10 +39,10 @@
     </div>
 
     <section class="parcours-section futuristic-section reveal-section">
-      <p class="eyebrow animate-on-scroll">Parcours</p>
-      <h2 class="glow-text section-title animate-on-scroll" style="--i: 1">Formations & certifications</h2>
+      <p class="eyebrow animate-on-scroll">{{ t("about.parcoursEyebrow") }}</p>
+      <h2 class="glow-text section-title animate-on-scroll" style="--i: 1">{{ t("about.parcoursTitle") }}</h2>
       <p class="section-desc animate-on-scroll" style="--i: 2">
-        Certificats et étapes clés qui ont structuré mon parcours en design, réseaux et développement web.
+        {{ t("about.parcoursDesc") }}
       </p>
       <div class="timeline-infographic">
         <div class="timeline-path">
@@ -82,7 +86,7 @@
           <div class="step-text">
             <span class="step-date">{{ item.date }}</span>
             <h3 class="step-title">
-              <span class="step-title-label">Étape</span>
+              <span class="step-title-label">{{ t("about.stepLabel") }}</span>
               <span class="step-title-accent">{{ String(i + 1).padStart(2, '0') }}</span>
               <span class="step-title-main"> — {{ item.title }}</span>
             </h3>
@@ -102,7 +106,7 @@
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
-              Télécharger le certificat (PDF)
+              {{ t("about.downloadCert") }}
             </a>
           </div>
         </div>
@@ -110,27 +114,30 @@
     </section>
 
     <section class="testimonials-section futuristic-section reveal-section">
-      <p class="eyebrow animate-on-scroll">Témoignages</p>
-      <h2 class="glow-text section-title animate-on-scroll" style="--i: 1">Ce que disent mes clients</h2>
+      <p class="eyebrow animate-on-scroll">{{ t("about.testimonialsEyebrow") }}</p>
+      <h2 class="glow-text section-title animate-on-scroll" style="--i: 1">{{ t("about.testimonialsTitle") }}</h2>
       <p class="section-desc animate-on-scroll" style="--i: 2">
-        Des retours d'expérience de personnes avec qui j'ai eu le plaisir de collaborer.
+        {{ t("about.testimonialsDesc") }}
       </p>
       <div class="testimonial-wrapper animate-on-scroll" style="--i: 3">
         <div class="testimonial-card-new">
           <div class="testimonial-avatar-wrap">
             <img
               src="https://i.postimg.cc/rmmxsmbQ/Capture-d-ecran-2026-02-28-120529.png"
-              alt="Photo du témoin"
+              :alt="t('about.witnessAlt')"
               class="testimonial-avatar"
             />
           </div>
           <h3 class="testimonial-name">Horatio</h3>
-          <p class="testimonial-title">clien</p>
+          <p class="testimonial-title">{{ t("about.testimonialRole") }}</p>
           <p class="testimonial-firm">Interior Design Firm</p>
           <blockquote class="testimonial-quote-new">
             <span class="quote-mark quote-open">"</span>
-            Un talent rare qui combine expertise technique et vision artistique. Notre site web a non seulement une
-            <strong class="highlight">apparence exceptionnelle</strong>, mais il offre également une expérience utilisateur fluide et intuitive.
+            <i18n-t keypath="about.testimonialQuote" tag="span">
+              <template #highlight>
+                <strong class="highlight">{{ t("about.testimonialHighlight") }}</strong>
+              </template>
+            </i18n-t>
             <span class="quote-mark quote-close">"</span>
           </blockquote>
           <div class="testimonial-stars">
@@ -142,7 +149,7 @@
 
     <section class="about-cta reveal-section">
       <RouterLink class="button cta-futuristic animate-on-scroll" to="/contact">
-        <span class="cta-text">Discutons de votre projet</span>
+        <span class="cta-text">{{ t("about.cta") }}</span>
         <span class="cta-shine"></span>
       </RouterLink>
     </section>
@@ -152,7 +159,12 @@
 <script setup>
 import { computed, onMounted } from "vue";
 import { RouterLink } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { profil, parcours } from "../data/static";
+
+const { locale, t, tm } = useI18n();
+
+const bioParagraphs = computed(() => tm("profil.bioParagraphs"));
 
 const base = import.meta.env.BASE_URL || "/";
 
@@ -161,17 +173,33 @@ const aboutHeroVideoUrl = computed(() => {
   return `${b}videos/ttt.mp4`;
 });
 
-const parcoursDisplay = computed(() =>
-  parcours.map((p) => ({
+const parcoursDisplay = computed(() => {
+  const normBase = base.endsWith("/") ? base : `${base}/`;
+  if (locale.value === "en") {
+    const enItems = tm("aboutParcours");
+    return enItems.map((p, i) => {
+      const src = parcours[i];
+      return {
+        date: p.date,
+        title: p.title,
+        place: p.place,
+        location: p.location,
+        description: p.description,
+        pdfHref: src?.pdf ? `${normBase}${src.pdf}`.replace(/([^:]\/)\/+/g, "$1") : null,
+        pdfNomFichier: src?.pdfNomFichier,
+      };
+    });
+  }
+  return parcours.map((p) => ({
     date: p.date,
     title: p.titre,
     place: p.lieu,
     location: p.localisation,
     description: p.description,
-    pdfHref: p.pdf ? `${base}${p.pdf}`.replace(/([^:]\/)\/+/g, "$1") : null,
+    pdfHref: p.pdf ? `${normBase}${p.pdf}`.replace(/([^:]\/)\/+/g, "$1") : null,
     pdfNomFichier: p.pdfNomFichier,
-  }))
-);
+  }));
+});
 
 const stepColors = ["#ef4444", "#f97316", "#eab308", "#22c55e"];
 

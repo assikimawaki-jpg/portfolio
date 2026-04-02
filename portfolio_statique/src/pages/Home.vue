@@ -2,22 +2,22 @@
   <section class="hero hero-shell">
     <div class="hero-grid">
       <div class="hero-info">
-        <p class="hero-eyebrow animate-in">Bonjour, je suis</p>
+        <p class="hero-eyebrow animate-in">{{ t("home.eyebrow") }}</p>
         <h1 class="hero-title hero-brand-name animate-in" style="--delay: 0.05s">
           {{ profil.nom }}
         </h1>
         <p class="hero-role animate-in" style="--delay: 0.1s">
-          {{ profil.titre_professionnel }}
+          {{ t("profil.titre_professionnel") }}
         </p>
         <p class="hero-tag animate-in" style="--delay: 0.15s">
-          pour le web design et l'automatisation digitale
+          {{ t("home.heroTag") }}
         </p>
         <p class="hero-copy animate-in" style="--delay: 0.2s">
-          {{ profil.heroIntro }}
+          {{ t("profil.heroIntro") }}
         </p>
         <div class="hero-actions animate-in" style="--delay: 0.25s">
           <button type="button" class="button" @click="onContactezMoiClick">
-            Contactez-moi
+            {{ t("home.contactMe") }}
           </button>
           <a
             v-if="profil.github"
@@ -26,7 +26,7 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            Voir mon Git
+            {{ t("home.viewGit") }}
           </a>
           <a
             v-if="profil.cv"
@@ -120,7 +120,7 @@
         <div class="ring"></div>
         <div class="ring ring-glow"></div>
         <div class="photo-frame">
-          <img :src="heroImage" alt="Photo profil" />
+          <img :src="heroImage" :alt="t('home.photoAlt')" />
         </div>
       </div>
     </div>
@@ -141,16 +141,16 @@
             <path d="M22 6l-10 7L2 6" stroke-linecap="round" />
           </svg>
         </div>
-        <p class="contact-hint-title">Contactez-moi et</p>
-        <p class="contact-hint-text">je vous réponds au plus vite.</p>
+        <p class="contact-hint-title">{{ t("home.contactHintTitle") }}</p>
+        <p class="contact-hint-text">{{ t("home.contactHintText") }}</p>
         <span class="contact-hint-shine" aria-hidden="true" />
       </div>
     </div>
   </Transition>
 
   <section class="services">
-    <p class="hero-eyebrow">Mes services</p>
-    <h2 class="glow-text">Ce que je fais</h2>
+    <p class="hero-eyebrow">{{ t("home.servicesEyebrow") }}</p>
+    <h2 class="glow-text">{{ t("home.servicesTitle") }}</h2>
     <div class="grid three service-grid">
       <div class="card service-card step-service-1">
         <div class="service-step-badge">01</div>
@@ -166,9 +166,9 @@
             />
           </svg>
         </div>
-        <h3>Designer UI/UX</h3>
-        <p class="muted">Design d'interfaces modernes et centrées utilisateur.</p>
-        <RouterLink to="/competences" class="link">Voir plus</RouterLink>
+        <h3>{{ t("home.service1Title") }}</h3>
+        <p class="muted">{{ t("home.service1Desc") }}</p>
+        <RouterLink to="/competences" class="link">{{ t("home.seeMore") }}</RouterLink>
       </div>
       <div class="card service-card step-service-2">
         <div class="service-step-badge">02</div>
@@ -184,9 +184,9 @@
             />
           </svg>
         </div>
-        <h3>Graphisme</h3>
-        <p class="muted">Identité visuelle, branding, et supports marketing.</p>
-        <RouterLink to="/competences" class="link">Voir plus</RouterLink>
+        <h3>{{ t("home.service2Title") }}</h3>
+        <p class="muted">{{ t("home.service2Desc") }}</p>
+        <RouterLink to="/competences" class="link">{{ t("home.seeMore") }}</RouterLink>
       </div>
       <div class="card service-card step-service-3">
         <div class="service-step-badge">03</div>
@@ -202,9 +202,9 @@
             />
           </svg>
         </div>
-        <h3>Web Design</h3>
-        <p class="muted">Sites vitrines élégants et performants.</p>
-        <RouterLink to="/competences" class="link">Voir plus</RouterLink>
+        <h3>{{ t("home.service3Title") }}</h3>
+        <p class="muted">{{ t("home.service3Desc") }}</p>
+        <RouterLink to="/competences" class="link">{{ t("home.seeMore") }}</RouterLink>
       </div>
     </div>
   </section>
@@ -213,7 +213,10 @@
 <script setup>
 import { ref, onUnmounted, watch } from "vue";
 import { RouterLink, useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { profil } from "../data/static";
+
+const { t } = useI18n();
 import heroProfileImage from "../assets/hero-profile.png";
 
 const heroImage = heroProfileImage;

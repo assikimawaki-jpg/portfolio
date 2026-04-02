@@ -14,10 +14,10 @@
         <div class="projects-hero-scrim" />
       </div>
       <div class="projects-hero-content">
-        <span class="pill">Portfolio</span>
-        <h1 class="page-title">Mes projets</h1>
+        <span class="pill">{{ t("projectsPage.pill") }}</span>
+        <h1 class="page-title">{{ t("projectsPage.title") }}</h1>
         <p class="muted page-intro">
-          Chaque projet est présenté sous forme de mini étude : contexte, problème, solution, résultat — avec des textes courts et lisibles.
+          {{ t("projectsPage.intro") }}
         </p>
       </div>
     </div>
@@ -27,13 +27,13 @@
       class="filter-chip"
       role="status"
     >
-      <span class="filter-chip-label">Filtre actif</span>
+      <span class="filter-chip-label">{{ t("projectsPage.filterActive") }}</span>
       <span class="filter-chip-q">« {{ route.query.q }} »</span>
       <RouterLink
         :to="{ path: '/mes-projets', query: {} }"
         class="filter-chip-clear"
       >
-        Réinitialiser
+        {{ t("projectsPage.reset") }}
       </RouterLink>
     </div>
 
@@ -72,26 +72,26 @@
                   <circle cx="8.5" cy="8.5" r="1.5" />
                   <path d="M21 15l-5-5L5 21" />
                 </svg>
-                <span>Projet</span>
+                <span>{{ t("projectsPage.projectLabel") }}</span>
               </div>
             </div>
             <div class="project-body">
               <h2 class="project-title">{{ project.titre }}</h2>
               <div v-if="project.contexte" class="project-case">
                 <div class="case-block">
-                  <span class="case-label">Contexte</span>
+                  <span class="case-label">{{ t("projectsPage.contexte") }}</span>
                   <p class="case-text">{{ project.contexte }}</p>
                 </div>
                 <div class="case-block">
-                  <span class="case-label">Problème</span>
+                  <span class="case-label">{{ t("projectsPage.probleme") }}</span>
                   <p class="case-text">{{ project.probleme }}</p>
                 </div>
                 <div class="case-block">
-                  <span class="case-label">Solution</span>
+                  <span class="case-label">{{ t("projectsPage.solution") }}</span>
                   <p class="case-text">{{ project.solution }}</p>
                 </div>
                 <div class="case-block">
-                  <span class="case-label">Résultat</span>
+                  <span class="case-label">{{ t("projectsPage.resultat") }}</span>
                   <p class="case-text">{{ project.resultat }}</p>
                 </div>
               </div>
@@ -104,7 +104,7 @@
                   rel="noopener noreferrer"
                   class="project-btn"
                 >
-                  Voir la démo
+                  {{ t("projectsPage.viewDemo") }}
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                     <polyline points="15 3 21 3 21 9" />
@@ -129,7 +129,7 @@
                   class="project-btn secondary"
                   :download="fichierImage(project)"
                 >
-                  Télécharger l’image
+                  {{ t("projectsPage.downloadImage") }}
                 </a>
               </div>
             </div>
@@ -139,7 +139,7 @@
     </template>
 
     <p v-if="!projectSections.length" class="projects-empty">
-      {{ searchQuery ? "Aucun projet ne correspond à votre recherche." : "Aucun projet pour le moment." }}
+      {{ searchQuery ? t("projectsPage.emptySearch") : t("projectsPage.empty") }}
     </p>
   </section>
 </template>
@@ -147,9 +147,17 @@
 <script setup>
 import { computed } from "vue";
 import { useRoute, RouterLink } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { projets, projetsGraphisme } from "../data/static";
+import { mergeProjectLocale } from "../i18n/mergeProject";
 
 const route = useRoute();
+const { t, locale } = useI18n();
+
+const projetsMerged = computed(() => projets.map((p) => mergeProjectLocale(p, locale.value)));
+const projetsGraphismeMerged = computed(() =>
+  projetsGraphisme.map((p) => mergeProjectLocale(p, locale.value))
+);
 const base = import.meta.env.BASE_URL || "/";
 
 const resolveImg = (path) => {
@@ -197,22 +205,22 @@ const filterList = (list) => {
 };
 
 const projectSections = computed(() => {
-  const web = filterList(projets);
-  const graph = filterList(projetsGraphisme);
+  const web = filterList(projetsMerged.value);
+  const graph = filterList(projetsGraphismeMerged.value);
   const out = [];
   if (web.length) {
     out.push({
       key: "web",
-      title: "Projets web & digital",
-      subtitle: "Sites, applications et interfaces — études de cas synthétiques.",
+      title: t("projectsPage.sectionWebTitle"),
+      subtitle: t("projectsPage.sectionWebSubtitle"),
       items: web,
     });
   }
   if (graph.length) {
     out.push({
       key: "graphisme",
-      title: "Graphisme & affiches",
-      subtitle: "Logos, affiches et visuels — même structure (contexte à résultat).",
+      title: t("projectsPage.sectionGraphTitle"),
+      subtitle: t("projectsPage.sectionGraphSubtitle"),
       items: graph,
     });
   }

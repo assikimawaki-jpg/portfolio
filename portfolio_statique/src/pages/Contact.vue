@@ -2,10 +2,10 @@
   <section class="contact-shell">
     <div class="contact-card">
       <div class="contact-info">
-        <p class="eyebrow">Contact</p>
-        <h2 class="title">Entrons en contact</h2>
+        <p class="eyebrow">{{ t("contact.eyebrow") }}</p>
+        <h2 class="title">{{ t("contact.title") }}</h2>
         <p class="muted">
-          Besoin d'un site web moderne ou d'une refonte UI/UX ? Contactez-moi, je vous réponds rapidement.
+          {{ t("contact.intro") }}
         </p>
         <div class="info-list">
           <div class="info-item">
@@ -21,7 +21,7 @@
               </svg>
             </span>
             <div>
-              <strong>Adresse</strong>
+              <strong>{{ t("contact.address") }}</strong>
               <p class="muted">
                 <a
                   href="https://www.google.com/maps/search/Ago%C3%A8+Tel%C3%A9ssou,+Lom%C3%A9,+Togo"
@@ -51,7 +51,7 @@
               </svg>
             </span>
             <div>
-              <strong>Email</strong>
+              <strong>{{ t("contact.email") }}</strong>
               <p class="muted">assikimawaki@gmail.com</p>
             </div>
           </div>
@@ -65,7 +65,7 @@
               </svg>
             </span>
             <div>
-              <strong>Téléphone</strong>
+              <strong>{{ t("contact.phone") }}</strong>
               <p class="muted">
                 <a href="tel:+22870546096">+228 70-54-60-96</a>
               </p>
@@ -73,7 +73,7 @@
           </div>
         </div>
         <div class="socials">
-          <span class="muted">Réseaux</span>
+          <span class="muted">{{ t("contact.socials") }}</span>
           <div class="social-row">
             <a
               href="https://x.com/tony_kemzy?t=hdJksj-aYSVvpryViuC87Q"
@@ -137,27 +137,27 @@
       </div>
 
       <div class="contact-form">
-        <h3>Envoyez un message</h3>
+        <h3>{{ t("contact.formTitle") }}</h3>
         <form class="form" @submit.prevent="submitForm">
           <div class="grid">
             <label>
-              Nom
+              {{ t("contact.name") }}
               <input v-model="form.nom" type="text" required />
             </label>
             <label>
-              Email
+              {{ t("contact.emailLabel") }}
               <input v-model="form.email" type="email" required />
             </label>
           </div>
           <label>
-            Sujet
+            {{ t("contact.subject") }}
             <input v-model="form.sujet" type="text" required />
           </label>
           <label>
-            Message
+            {{ t("contact.message") }}
             <textarea v-model="form.message" rows="5" required></textarea>
           </label>
-          <button class="button" type="submit">Envoyer</button>
+          <button class="button" type="submit">{{ t("contact.send") }}</button>
           <p v-if="successMessage" class="success">{{ successMessage }}</p>
         </form>
       </div>
@@ -165,7 +165,7 @@
 
     <div class="map-card">
       <iframe
-        title="Carte"
+        :title="t('contact.mapTitle')"
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"
         src="https://maps.google.com/maps?q=Ago%C3%A8+Tel%C3%A9ssou,+Lom%C3%A9,+Togo&output=embed"
@@ -176,7 +176,10 @@
 
 <script setup>
 import { reactive, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { profil } from "../data/static";
+
+const { t } = useI18n();
 
 const form = reactive({
   nom: "",
@@ -193,7 +196,7 @@ const submitForm = () => {
     `Nom: ${form.nom}\nEmail: ${form.email}\n\nMessage:\n${form.message}`
   );
   window.location.href = `mailto:${profil.email}?subject=${subject}&body=${body}`;
-  successMessage.value = "Votre client mail s'ouvre. Envoyez le message.";
+  successMessage.value = t("contact.success");
 };
 </script>
 

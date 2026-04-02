@@ -7,7 +7,7 @@
         role="dialog"
         aria-modal="true"
         aria-live="assertive"
-        aria-label="Transition de page"
+        :aria-label="t('app.navTransitionAria')"
       >
         <video
           :key="navVideoFilename"
@@ -27,7 +27,7 @@
         role="dialog"
         aria-modal="true"
         aria-live="polite"
-        aria-label="Bienvenus"
+        :aria-label="t('app.welcomeAria')"
       >
         <div class="welcome-flash-layer" aria-hidden="true" />
         <div class="welcome-bolts" aria-hidden="true">
@@ -75,38 +75,56 @@
           </svg>
         </div>
         <div class="welcome-content">
-          <h2 class="welcome-title">Bienvenus</h2>
+          <h2 class="welcome-title">{{ t("app.welcomeTitle") }}</h2>
         </div>
       </div>
     </Transition>
     <header class="header">
       <div class="container header-content">
         <RouterLink to="/" class="logo" @click.prevent="(e) => onNavPageClick('/', e)">
-          <img class="logo-avatar" :src="logoAvatar" alt="Profil" />
-          Portfolio
+          <img class="logo-avatar" :src="logoAvatar" :alt="t('nav.logoAlt')" />
+          {{ t("nav.portfolio") }}
         </RouterLink>
         <nav class="nav">
-          <RouterLink to="/" @click.prevent="(e) => onNavPageClick('/', e)">Accueil</RouterLink>
-          <RouterLink to="/a-propos" @click.prevent="(e) => onNavPageClick('/a-propos', e)">À propos</RouterLink>
-          <RouterLink to="/competences" @click.prevent="(e) => onNavPageClick('/competences', e)">Compétences</RouterLink>
-          <RouterLink to="/mes-projets" @click.prevent="(e) => onNavPageClick('/mes-projets', e)">Mes projets</RouterLink>
-          <RouterLink to="/contact" @click.prevent="(e) => onNavPageClick('/contact', e)">Contact</RouterLink>
+          <RouterLink to="/" @click.prevent="(e) => onNavPageClick('/', e)">{{ t("nav.home") }}</RouterLink>
+          <RouterLink to="/a-propos" @click.prevent="(e) => onNavPageClick('/a-propos', e)">{{ t("nav.about") }}</RouterLink>
+          <RouterLink to="/competences" @click.prevent="(e) => onNavPageClick('/competences', e)">{{ t("nav.skills") }}</RouterLink>
+          <RouterLink to="/mes-projets" @click.prevent="(e) => onNavPageClick('/mes-projets', e)">{{ t("nav.projects") }}</RouterLink>
+          <RouterLink to="/contact" @click.prevent="(e) => onNavPageClick('/contact', e)">{{ t("nav.contact") }}</RouterLink>
         </nav>
+        <div class="lang-switch" role="group" :aria-label="t('lang.label')">
+          <button
+            type="button"
+            class="lang-btn"
+            :class="{ active: locale === 'fr' }"
+            @click="setLocale('fr')"
+          >
+            {{ t("lang.fr") }}
+          </button>
+          <button
+            type="button"
+            class="lang-btn"
+            :class="{ active: locale === 'en' }"
+            @click="setLocale('en')"
+          >
+            {{ t("lang.en") }}
+          </button>
+        </div>
         <form class="header-actions" @submit.prevent="onSearch">
           <input
             v-model="searchQuery"
             class="search"
             type="search"
-            placeholder="Rechercher compétences, projets..."
-            aria-label="Recherche"
+            :placeholder="t('nav.searchPlaceholder')"
+            :aria-label="t('nav.search')"
           />
-          <button type="submit" class="button">Rechercher</button>
+          <button type="submit" class="button">{{ t("nav.search") }}</button>
         </form>
         <button
           class="hamburger"
           :class="{ open: mobileMenuOpen }"
           type="button"
-          aria-label="Menu"
+          :aria-label="t('nav.menu')"
           :aria-expanded="mobileMenuOpen"
           @click="toggleMobileMenu"
         >
@@ -118,21 +136,21 @@
       <div class="mobile-menu" :class="{ open: mobileMenuOpen }">
         <div class="container mobile-menu-inner">
         <nav class="mobile-nav">
-          <RouterLink to="/" @click.prevent="(e) => onNavPageClick('/', e)">Accueil</RouterLink>
-          <RouterLink to="/a-propos" @click.prevent="(e) => onNavPageClick('/a-propos', e)">À propos</RouterLink>
-          <RouterLink to="/competences" @click.prevent="(e) => onNavPageClick('/competences', e)">Compétences</RouterLink>
-          <RouterLink to="/mes-projets" @click.prevent="(e) => onNavPageClick('/mes-projets', e)">Mes projets</RouterLink>
-          <RouterLink to="/contact" @click.prevent="(e) => onNavPageClick('/contact', e)">Contact</RouterLink>
+          <RouterLink to="/" @click.prevent="(e) => onNavPageClick('/', e)">{{ t("nav.home") }}</RouterLink>
+          <RouterLink to="/a-propos" @click.prevent="(e) => onNavPageClick('/a-propos', e)">{{ t("nav.about") }}</RouterLink>
+          <RouterLink to="/competences" @click.prevent="(e) => onNavPageClick('/competences', e)">{{ t("nav.skills") }}</RouterLink>
+          <RouterLink to="/mes-projets" @click.prevent="(e) => onNavPageClick('/mes-projets', e)">{{ t("nav.projects") }}</RouterLink>
+          <RouterLink to="/contact" @click.prevent="(e) => onNavPageClick('/contact', e)">{{ t("nav.contact") }}</RouterLink>
         </nav>
         <form class="mobile-actions" @submit.prevent="onSearch">
           <input
             v-model="searchQuery"
             class="search"
             type="search"
-            placeholder="Rechercher compétences, projets..."
-            aria-label="Recherche"
+            :placeholder="t('nav.searchPlaceholder')"
+            :aria-label="t('nav.search')"
           />
-          <button type="submit" class="button">Rechercher</button>
+          <button type="submit" class="button">{{ t("nav.search") }}</button>
         </form>
         </div>
       </div>
@@ -145,7 +163,7 @@
     <button
       v-show="showScrollBtn"
       class="scroll-top-btn"
-      aria-label="Retour en haut"
+      :aria-label="t('app.scrollTop')"
       @click="scrollToTop"
     >
       <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -159,19 +177,19 @@
             <span class="footer-logo-accent">Assiki</span><span class="footer-logo-name">Mawaki</span>
           </h3>
           <p class="footer-slogan">
-            Création d'expériences numériques innovantes et captivantes pour transformer vos idées en réalités visuelles.
+            {{ t("footer.slogan") }}
           </p>
         </div>
         <div class="footer-links">
-          <p class="footer-title">Liens Rapides</p>
-          <RouterLink to="/" @click.prevent="(e) => onNavPageClick('/', e)">Accueil</RouterLink>
-          <RouterLink to="/a-propos" @click.prevent="(e) => onNavPageClick('/a-propos', e)">À propos</RouterLink>
-          <RouterLink to="/competences" @click.prevent="(e) => onNavPageClick('/competences', e)">Compétences</RouterLink>
-          <RouterLink to="/mes-projets" @click.prevent="(e) => onNavPageClick('/mes-projets', e)">Mes projets</RouterLink>
-          <RouterLink to="/contact" @click.prevent="(e) => onNavPageClick('/contact', e)">Contact</RouterLink>
+          <p class="footer-title">{{ t("footer.quickLinks") }}</p>
+          <RouterLink to="/" @click.prevent="(e) => onNavPageClick('/', e)">{{ t("nav.home") }}</RouterLink>
+          <RouterLink to="/a-propos" @click.prevent="(e) => onNavPageClick('/a-propos', e)">{{ t("nav.about") }}</RouterLink>
+          <RouterLink to="/competences" @click.prevent="(e) => onNavPageClick('/competences', e)">{{ t("nav.skills") }}</RouterLink>
+          <RouterLink to="/mes-projets" @click.prevent="(e) => onNavPageClick('/mes-projets', e)">{{ t("nav.projects") }}</RouterLink>
+          <RouterLink to="/contact" @click.prevent="(e) => onNavPageClick('/contact', e)">{{ t("nav.contact") }}</RouterLink>
         </div>
         <div class="footer-socials">
-          <p class="footer-title">Réseaux sociaux</p>
+          <p class="footer-title">{{ t("footer.social") }}</p>
           <div class="footer-socials-row">
             <a
               href="https://x.com/tony_kemzy?t=hdJksj-aYSVvpryViuC87Q"
@@ -233,27 +251,27 @@
           </div>
         </div>
         <div class="footer-newsletter">
-          <p class="footer-title">Newsletter</p>
+          <p class="footer-title">{{ t("footer.newsletter") }}</p>
           <p class="footer-newsletter-desc">
-            Abonnez-vous pour recevoir mes derniers articles et actualités.
+            {{ t("footer.newsletterDesc") }}
           </p>
           <form class="newsletter-form" @submit.prevent="onNewsletterSubmit">
             <input
               v-model="newsletterEmail"
               type="email"
-              placeholder="Votre email"
+              :placeholder="t('footer.emailPlaceholder')"
               class="newsletter-input"
               required
             />
-            <button type="submit" class="newsletter-btn">OK</button>
+            <button type="submit" class="newsletter-btn">{{ t("footer.newsletterOk") }}</button>
           </form>
         </div>
       </div>
       <div class="footer-bar">
-        <span class="footer-copyright">© {{ currentYear }} Assiki Mawaki. Tous droits réservés.</span>
+        <span class="footer-copyright">{{ t("footer.copyright", { year: currentYear }) }}</span>
         <div class="footer-legal">
-          <a href="#" class="footer-legal-link">Mentions légales</a>
-          <a href="#" class="footer-legal-link">Politique de confidentialité</a>
+          <a href="#" class="footer-legal-link">{{ t("footer.legal") }}</a>
+          <a href="#" class="footer-legal-link">{{ t("footer.privacy") }}</a>
         </div>
       </div>
     </footer>
@@ -263,7 +281,20 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick, watch, computed, provide } from "vue";
 import { RouterLink, RouterView, useRouter, useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 import logoAvatar from "./assets/logo-avatar.png";
+
+const { locale, t } = useI18n();
+
+function setLocale(lang) {
+  locale.value = lang;
+  if (typeof localStorage !== "undefined") {
+    localStorage.setItem("portfolio-locale", lang);
+  }
+  if (typeof document !== "undefined") {
+    document.documentElement.lang = lang;
+  }
+}
 
 const NAV_VIDEO_MS = 2000;
 const DEFAULT_NAV_VIDEO = "banniere-competence.mp4";
@@ -449,6 +480,9 @@ const onScroll = () => {
 };
 
 onMounted(() => {
+  if (typeof document !== "undefined") {
+    document.documentElement.lang = locale.value;
+  }
   window.addEventListener("scroll", onScroll);
   if (!prefersReducedMotionNav()) {
     welcomeDelayTimer = window.setTimeout(() => {
@@ -839,6 +873,40 @@ const onNewsletterSubmit = () => {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  flex-shrink: 0;
+}
+
+.lang-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(226, 232, 240, 0.72);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+  font-family: inherit;
+}
+
+.lang-btn:hover {
+  color: #e2e8f0;
+}
+
+.lang-btn.active {
+  background: rgba(59, 130, 246, 0.38);
+  color: #f8fafc;
 }
 
 .search {
