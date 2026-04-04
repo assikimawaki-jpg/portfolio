@@ -21,6 +21,10 @@ export default {
     welcomeAria: "Welcome",
     welcomeTitle: "Welcome",
     scrollTop: "Back to top",
+    aboutNavHintTitle: "Everything you need to know about me",
+    aboutNavHintText: "Background, training, and what drives me.",
+    skillsNavHintTitle: "Skills & tools",
+    skillsNavHintText: "Design, development, and tech — browse by category.",
   },
   footer: {
     slogan:

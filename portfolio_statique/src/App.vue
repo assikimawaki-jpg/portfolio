@@ -79,6 +79,71 @@
         </div>
       </div>
     </Transition>
+    <Transition name="contact-hint-fade">
+      <div
+        v-if="showContactNavHint"
+        class="contact-hint-overlay"
+        role="dialog"
+        aria-modal="true"
+        :aria-label="t('nav.contact')"
+      >
+        <div class="contact-hint-card">
+          <div class="contact-hint-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 4h16v16H4z" stroke-linejoin="round" />
+              <path d="M22 6l-10 7L2 6" stroke-linecap="round" />
+            </svg>
+          </div>
+          <p class="contact-hint-title">{{ t("home.contactHintTitle") }}</p>
+          <p class="contact-hint-text">{{ t("home.contactHintText") }}</p>
+          <span class="contact-hint-shine" aria-hidden="true" />
+        </div>
+      </div>
+    </Transition>
+    <Transition name="contact-hint-fade">
+      <div
+        v-if="showAboutNavHint"
+        class="contact-hint-overlay"
+        role="dialog"
+        aria-modal="true"
+        :aria-label="t('nav.about')"
+      >
+        <div class="contact-hint-card">
+          <div class="contact-hint-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M6 20v-1a6 6 0 0 1 12 0v1" />
+            </svg>
+          </div>
+          <p class="contact-hint-title">{{ t("app.aboutNavHintTitle") }}</p>
+          <p class="contact-hint-text">{{ t("app.aboutNavHintText") }}</p>
+          <span class="contact-hint-shine" aria-hidden="true" />
+        </div>
+      </div>
+    </Transition>
+    <Transition name="contact-hint-fade">
+      <div
+        v-if="showSkillsNavHint"
+        class="contact-hint-overlay"
+        role="dialog"
+        aria-modal="true"
+        :aria-label="t('nav.skills')"
+      >
+        <div class="contact-hint-card">
+          <div class="contact-hint-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+            </svg>
+          </div>
+          <p class="contact-hint-title">{{ t("app.skillsNavHintTitle") }}</p>
+          <p class="contact-hint-text">{{ t("app.skillsNavHintText") }}</p>
+          <span class="contact-hint-shine" aria-hidden="true" />
+        </div>
+      </div>
+    </Transition>
     <header class="header">
       <div class="container header-content">
         <RouterLink to="/" class="logo" @click.prevent="(e) => onNavPageClick('/', e)">
@@ -343,6 +408,110 @@ let welcomeDelayTimer = null;
 let welcomeHideTimer = null;
 let welcomeRetryTimer = null;
 
+/** Animation « Contact » (navbar / footer) — même durée que le bouton d’accueil */
+const CONTACT_NAV_HINT_MS = 2200;
+const CONTACT_NAV_HINT_MS_REDUCED = 500;
+const showContactNavHint = ref(false);
+let contactNavHintTimer = null;
+
+const showAboutNavHint = ref(false);
+let aboutNavHintTimer = null;
+
+const showSkillsNavHint = ref(false);
+let skillsNavHintTimer = null;
+
+function prefersReducedMotionContactHint() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function clearContactNavHintTimer() {
+  if (contactNavHintTimer != null) {
+    clearTimeout(contactNavHintTimer);
+    contactNavHintTimer = null;
+  }
+}
+
+function clearAboutNavHintTimer() {
+  if (aboutNavHintTimer != null) {
+    clearTimeout(aboutNavHintTimer);
+    aboutNavHintTimer = null;
+  }
+}
+
+function clearSkillsNavHintTimer() {
+  if (skillsNavHintTimer != null) {
+    clearTimeout(skillsNavHintTimer);
+    skillsNavHintTimer = null;
+  }
+}
+
+function openContactNavTransition() {
+  if (route.path === "/contact") {
+    closeMobileMenu();
+    return;
+  }
+  clearSkillsNavHintTimer();
+  showSkillsNavHint.value = false;
+  clearAboutNavHintTimer();
+  showAboutNavHint.value = false;
+  clearContactNavHintTimer();
+  showContactNavHint.value = true;
+  const delay = prefersReducedMotionContactHint()
+    ? CONTACT_NAV_HINT_MS_REDUCED
+    : CONTACT_NAV_HINT_MS;
+  contactNavHintTimer = window.setTimeout(() => {
+    contactNavHintTimer = null;
+    showContactNavHint.value = false;
+    router.push("/contact");
+    closeMobileMenu();
+  }, delay);
+}
+
+function openAboutNavTransition() {
+  if (route.path === "/a-propos") {
+    closeMobileMenu();
+    return;
+  }
+  clearSkillsNavHintTimer();
+  showSkillsNavHint.value = false;
+  clearContactNavHintTimer();
+  showContactNavHint.value = false;
+  clearAboutNavHintTimer();
+  showAboutNavHint.value = true;
+  const delay = prefersReducedMotionContactHint()
+    ? CONTACT_NAV_HINT_MS_REDUCED
+    : CONTACT_NAV_HINT_MS;
+  aboutNavHintTimer = window.setTimeout(() => {
+    aboutNavHintTimer = null;
+    showAboutNavHint.value = false;
+    router.push("/a-propos");
+    closeMobileMenu();
+  }, delay);
+}
+
+function openSkillsNavTransition() {
+  if (route.path === "/competences") {
+    closeMobileMenu();
+    return;
+  }
+  clearContactNavHintTimer();
+  showContactNavHint.value = false;
+  clearAboutNavHintTimer();
+  showAboutNavHint.value = false;
+  clearSkillsNavHintTimer();
+  showSkillsNavHint.value = true;
+  const delay = prefersReducedMotionContactHint()
+    ? CONTACT_NAV_HINT_MS_REDUCED
+    : CONTACT_NAV_HINT_MS;
+  skillsNavHintTimer = window.setTimeout(() => {
+    skillsNavHintTimer = null;
+    showSkillsNavHint.value = false;
+    router.push("/competences");
+    closeMobileMenu();
+  }, delay);
+}
+
 const navVideoFilename = ref(DEFAULT_NAV_VIDEO);
 const navDurationMs = ref(NAV_VIDEO_MS);
 
@@ -424,6 +593,18 @@ provide("openNavTransition", openNavTransition);
 
 async function onNavPageClick(targetPath, e) {
   e?.preventDefault?.();
+  if (targetPath === "/a-propos") {
+    openAboutNavTransition();
+    return;
+  }
+  if (targetPath === "/competences") {
+    openSkillsNavTransition();
+    return;
+  }
+  if (targetPath === "/contact") {
+    openContactNavTransition();
+    return;
+  }
   await openNavTransition(targetPath, {
     videoFile: DEFAULT_NAV_VIDEO,
     durationMs: NAV_VIDEO_MS,
@@ -462,10 +643,11 @@ function runWelcomeOverlay() {
 }
 
 watch(
-  [showNavVideo, showWelcomeOverlay],
-  ([nav, welcome]) => {
+  [showNavVideo, showWelcomeOverlay, showContactNavHint, showAboutNavHint, showSkillsNavHint],
+  ([nav, welcome, contactHint, aboutHint, skillsHint]) => {
     if (typeof document === "undefined") return;
-    document.body.style.overflow = nav || welcome ? "hidden" : "";
+    document.body.style.overflow =
+      nav || welcome || contactHint || aboutHint || skillsHint ? "hidden" : "";
   },
   { immediate: true }
 );
@@ -516,6 +698,9 @@ onUnmounted(() => {
   window.removeEventListener("scroll", onScroll);
   clearNavVideoTimer();
   clearWelcomeTimers();
+  clearContactNavHintTimer();
+  clearAboutNavHintTimer();
+  clearSkillsNavHintTimer();
   if (typeof document !== "undefined") document.body.style.overflow = "";
 });
 
@@ -1354,6 +1539,153 @@ const onNewsletterSubmit = () => {
   .scroll-top-btn svg {
     width: 20px;
     height: 20px;
+  }
+}
+
+/* Animation « Contact » (clic navbar / footer) — alignée sur Home.vue */
+.contact-hint-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(2, 6, 23, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.contact-hint-card {
+  position: relative;
+  max-width: 380px;
+  width: 100%;
+  padding: 32px 28px 30px;
+  border-radius: 20px;
+  text-align: center;
+  overflow: hidden;
+  background: linear-gradient(160deg, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.99));
+  border: 1px solid rgba(59, 130, 246, 0.45);
+  box-shadow:
+    0 0 0 1px rgba(147, 197, 253, 0.12),
+    0 24px 60px rgba(0, 0, 0, 0.55),
+    0 0 80px rgba(59, 130, 246, 0.18);
+  animation: contact-hint-pop 0.55s cubic-bezier(0.34, 1.35, 0.64, 1) both;
+}
+
+.contact-hint-icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 16px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  animation: contact-hint-icon-pulse 1.6s ease-in-out infinite;
+}
+
+.contact-hint-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.contact-hint-title {
+  margin: 0 0 8px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  background: linear-gradient(120deg, #f8fafc, #93c5fd);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.contact-hint-text {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: rgba(226, 232, 240, 0.92);
+  font-weight: 500;
+}
+
+.contact-hint-shine {
+  position: absolute;
+  inset: -50%;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 60%
+  );
+  animation: contact-hint-shine 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes contact-hint-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.88) translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes contact-hint-icon-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.35);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 24px 4px rgba(59, 130, 246, 0.25);
+    transform: scale(1.03);
+  }
+}
+
+@keyframes contact-hint-shine {
+  0% {
+    transform: translateX(-30%) rotate(12deg);
+  }
+  100% {
+    transform: translateX(30%) rotate(12deg);
+  }
+}
+
+.contact-hint-fade-enter-active,
+.contact-hint-fade-leave-active {
+  transition: opacity 0.35s ease;
+}
+
+.contact-hint-fade-enter-active .contact-hint-card,
+.contact-hint-fade-leave-active .contact-hint-card {
+  transition: transform 0.35s ease, opacity 0.35s ease;
+}
+
+.contact-hint-fade-enter-from,
+.contact-hint-fade-leave-to {
+  opacity: 0;
+}
+
+.contact-hint-fade-enter-from .contact-hint-card,
+.contact-hint-fade-leave-to .contact-hint-card {
+  transform: scale(0.95);
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-hint-card {
+    animation: none;
+  }
+
+  .contact-hint-icon {
+    animation: none;
+  }
+
+  .contact-hint-shine {
+    animation: none;
   }
 }
 </style>
